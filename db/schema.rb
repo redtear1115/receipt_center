@@ -10,9 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170919092450) do
+ActiveRecord::Schema.define(version: 20170920010437) do
 
   create_table "accessibilities", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.integer "app_series_id"
+  end
+
+  create_table "app_series", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "apps", force: :cascade do |t|
+    t.string "channel"
+    t.string "os"
+    t.string "device"
+    t.integer "app_series_id"
+    t.string "name"
+    t.string "external_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -20,6 +39,8 @@ ActiveRecord::Schema.define(version: 20170919092450) do
   create_table "credits", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
+    t.integer "amount"
   end
 
   create_table "materials", force: :cascade do |t|
@@ -44,6 +65,12 @@ ActiveRecord::Schema.define(version: 20170919092450) do
   create_table "packs", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "app_id"
+    t.string "external_id"
+    t.string "name"
+    t.boolean "subscribable"
+    t.integer "period_num"
+    t.string "period_unit"
   end
 
   create_table "receipts", force: :cascade do |t|
@@ -51,11 +78,20 @@ ActiveRecord::Schema.define(version: 20170919092450) do
     t.integer "pack_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "channel"
+    t.boolean "sandbox"
+    t.datetime "deleted_at"
+    t.datetime "purchased_at"
+    t.datetime "valid_from"
+    t.datetime "valid_to"
+    t.text "raw_data"
   end
 
   create_table "storages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
+    t.integer "capacity"
   end
 
 end

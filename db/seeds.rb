@@ -1,7 +1,55 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+all = AppSeries.create(name: 'All Series')
+ad = AppSeries.create(name: 'Animation Desk')
+nl = AppSeries.create(name: 'Noteledge')
+pdf = AppSeries.create(name: 'PDF Markup')
+wo = AppSeries.create(name: 'Write-on Video')
+scan = AppSeries.create(name: 'Pocket Scanner')
+AppSeries.create(name: 'Other')
+
+ad_ios_app = App.create(channel: 'Apple', os: 'iOS', device: 'iPhone', app_series: ad, name: 'Animation Desk Cloud iOS iPhone')
+nl_ios_app = App.create(channel: 'Apple', os: 'iOS', device: 'iPhone', app_series: nl, name: 'Noteledge Cloud iOS iPhone')
+pdf_ios_app = App.create(channel: 'Apple', os: 'iOS', device: 'iPhone', app_series: pdf, name: 'PDF Markup Cloud iOS iPhone')
+wo_ios_app = App.create(channel: 'Apple', os: 'iOS', device: 'iPhone', app_series: wo, name: 'Write-on Video Cloud iOS iPhone')
+scan_ios_app = App.create(channel: 'Apple', os: 'iOS', device: 'iPhone', app_series: scan, name: 'Pocket Scanner Cloud iOS iPhone')
+
+App.create(channel: 'Play', os: 'Android', app_series: ad, name: 'Animation Desk Cloud Android')
+App.create(channel: 'Play', os: 'Android', app_series: nl, name: 'Noteledge Cloud Android')
+App.create(channel: 'Play', os: 'Android', app_series: pdf, name: 'PDF Markup Cloud Android')
+App.create(channel: 'Play', os: 'Android', app_series: wo, name: 'Write-on Video Cloud Android')
+App.create(channel: 'Play', os: 'Android', app_series: scan, name: 'Pocket Scanner Cloud Android')
+
+all_acc = Accessibility.create(app_series: all, name: 'C365')
+ad_acc = Accessibility.create(app_series: ad, name: 'Animation Desk Advance Access')
+nl_acc = Accessibility.create(app_series: nl, name: 'Noteledge Advance Access')
+pdf_acc = Accessibility.create(app_series: pdf, name: 'PDF Markup  Advance Access')
+wo_acc = Accessibility.create(app_series: wo, name: 'Write-on Video Advance Access')
+scan_acc = Accessibility.create(app_series: scan, name: 'Pocket Scanner Advance Access')
+
+storage = Storage.create(name: 'Kdan Cloud Storage 10G', capacity: 10240000)
+credit = Credit.create(name: '20 Credit', amount: 20)
+ 
+ad_ios_pack = Pack.create(app: ad_ios_app, external_id: 'com.kdanmobile.animation-desk.c365.month', name: 'C365 for Animation Desk Monthly', subscribable: true, period_num: 1, period_unit: 'month')
+nl_ios_pack = Pack.create(app: nl_ios_app, external_id: 'com.kdanmobile.noteledge.c365.month', name: 'C365 for Noteledge Monthly', subscribable: true, period_num: 1, period_unit: 'month')
+pdf_ios_pack = Pack.create(app: pdf_ios_app, external_id: 'com.kdanmobile.pdf-markup.c365.month', name: 'C365 for PDF Markup Monthly', subscribable: true, period_num: 1, period_unit: 'month')
+wo_ios_pack = Pack.create(app: wo_ios_app, external_id: 'com.kdanmobile.write-on-video.c365.month', name: 'C365 for Write-on Video Desk Monthly', subscribable: true, period_num: 1, period_unit: 'month')
+scan_ios_pack = Pack.create(app: scan_ios_app, external_id: 'com.kdanmobile.pocket-scanner.c365.month', name: 'C365 for Pocket Scanner Monthly', subscribable: true, period_num: 1, period_unit: 'month')
+
+PackItem.create(pack: ad_ios_pack, unit: storage)
+PackItem.create(pack: ad_ios_pack, unit: credit)
+PackItem.create(pack: ad_ios_pack, unit: all_acc)
+
+PackItem.create(pack: nl_ios_pack, unit: storage)
+PackItem.create(pack: nl_ios_pack, unit: credit)
+PackItem.create(pack: nl_ios_pack, unit: all_acc)
+
+PackItem.create(pack: pdf_ios_pack, unit: storage)
+PackItem.create(pack: pdf_ios_pack, unit: credit)
+PackItem.create(pack: pdf_ios_pack, unit: all_acc)
+
+PackItem.create(pack: wo_ios_pack, unit: storage)
+PackItem.create(pack: wo_ios_pack, unit: credit)
+PackItem.create(pack: wo_ios_pack, unit: all_acc)
+
+PackItem.create(pack: scan_ios_pack, unit: storage)
+PackItem.create(pack: scan_ios_pack, unit: credit)
+PackItem.create(pack: scan_ios_pack, unit: all_acc)
