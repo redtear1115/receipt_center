@@ -1,3 +1,3 @@
 class Material < ApplicationRecord
-  has_many :used_in, as: :unit
+  include Unitable
 end

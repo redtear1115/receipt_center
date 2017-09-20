@@ -12,24 +12,20 @@
 
 ActiveRecord::Schema.define(version: 20170920010437) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "accessibilities", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
-    t.integer "app_series_id"
-  end
-
-  create_table "app_series", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "external_id"
   end
 
   create_table "apps", force: :cascade do |t|
     t.string "channel"
     t.string "os"
     t.string "device"
-    t.integer "app_series_id"
     t.string "name"
     t.string "external_id"
     t.datetime "created_at", null: false
@@ -56,7 +52,7 @@ ActiveRecord::Schema.define(version: 20170920010437) do
   create_table "pack_items", force: :cascade do |t|
     t.integer "pack_id"
     t.string "unit_type"
-    t.integer "unit_id"
+    t.bigint "unit_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["unit_type", "unit_id"], name: "index_pack_items_on_unit_type_and_unit_id"
@@ -69,6 +65,7 @@ ActiveRecord::Schema.define(version: 20170920010437) do
     t.string "external_id"
     t.string "name"
     t.boolean "subscribable"
+    t.boolean "extendable"
     t.integer "period_num"
     t.string "period_unit"
   end
