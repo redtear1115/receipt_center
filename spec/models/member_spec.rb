@@ -108,10 +108,17 @@ RSpec.describe Member, type: :model do
     it 'should return credit amount - withdraw amount' do
       receipt = create(:receipt, member: @member, pack: @ad_ios_credit_20)
       withdraw_amount = 6
-      @member.withdraw_credit(withdraw_amount)
+      credit_on_hand = @member.withdraw_credit(withdraw_amount)
       amount = receipt.pack.items.credit.amount - withdraw_amount
       
-      expect(@member.credit_on_hand).to eq(amount)
+      expect(credit_on_hand).to eq(amount)
+    end
+    
+    it 'should return nil if credit not enough' do
+      receipt = create(:receipt, member: @member, pack: @ad_ios_credit_20)
+      withdraw_amount = 26
+      credit_on_hand = @member.withdraw_credit(withdraw_amount)
+      expect(credit_on_hand).to be_nil
     end
   end
   

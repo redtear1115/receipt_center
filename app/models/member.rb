@@ -51,7 +51,9 @@ class Member < ApplicationRecord
   end
   
   def withdraw_credit(amount)
+    return if credit_on_hand - amount < 0
     credit_records.create(movement: :withdraw, amount: amount, occurred_at: Time.zone.now)
+    credit_on_hand
   end
   
 end
