@@ -5,6 +5,7 @@ class CreateCreditRecords < ActiveRecord::Migration[5.1]
       t.integer :movement
       t.integer :amount
       t.datetime :occurred_at
+      t.integer :expire_record_id
       
       t.timestamps
     end

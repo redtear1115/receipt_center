@@ -18,6 +18,11 @@ RSpec.describe Member, type: :model do
     create(:pack_item, pack: @ad_ios_deluxe_pack, unit: ad_acc)
     @nl_ios_deluxe_pack = create(:nl_ios_deluxe_pack, app: nl_ios_app)
     create(:pack_item, pack: @nl_ios_deluxe_pack, unit: nl_acc)
+    # Create cloud pack
+    @ad_ios_cloud_pack = create(:ad_ios_cloud_pack, app: ad_ios_app)
+    create(:pack_item, pack: @ad_ios_cloud_pack, unit: ad_acc)
+    create(:pack_item, pack: @ad_ios_cloud_pack, unit: credit)
+    create(:pack_item, pack: @ad_ios_cloud_pack, unit: storage)
     # Create all access pack
     @ad_ios_pack = create(:ad_ios_pack, app: ad_ios_app)
     @nl_ios_pack = create(:nl_ios_pack, app: nl_ios_app)
@@ -112,6 +117,42 @@ RSpec.describe Member, type: :model do
       amount = receipt.pack.items.credit.amount - withdraw_amount
       
       expect(credit_on_hand).to eq(amount)
+    end
+    
+    it 'should use subscribed credit first (credit record will expire less)' do
+      all_receipt1 = create(:receipt, member: @member, pack: @ad_ios_pack)
+      receipt = create(:receipt, member: @member, pack: @ad_ios_credit_20)
+      withdraw_amount = 6
+      credit_on_hand = @member.withdraw_credit(withdraw_amount)
+      amount = receipt.pack.items.credit.amount + all_receipt1.pack.items.credit.amount - withdraw_amount
+      
+      expect(credit_on_hand).to eq(amount)
+      expect(@member.credit_records.find_by(movement: :expire).amount).to eq(all_receipt1.pack.items.credit.amount - withdraw_amount)
+    end
+    
+    it 'should use out subscribed credit (credit record will expire 0)' do
+      all_receipt1 = create(:receipt, member: @member, pack: @ad_ios_pack)
+      receipt = create(:receipt, member: @member, pack: @ad_ios_credit_20)
+      withdraw_amount = 26
+      credit_on_hand = @member.withdraw_credit(withdraw_amount)
+      amount = receipt.pack.items.credit.amount + all_receipt1.pack.items.credit.amount - withdraw_amount
+      
+      expect(credit_on_hand).to eq(amount)
+      expect(@member.credit_records.where(amount: 0).count).to eq(1)
+    end
+    
+    it 'should use out subscribed credit multiple (2 credit records will both expire 0)' do
+      all_receipt1 = create(:receipt, member: @member, pack: @ad_ios_pack)
+      cloud_receipt = create(:receipt, member: @member, pack: @ad_ios_cloud_pack)
+      credit_receipt = create(:receipt, member: @member, pack: @ad_ios_credit_20)
+      all_receipt2 = create(:receipt, member: @member, pack: @ad_ios_pack)
+      all_receipt3 = create(:receipt, member: @member, pack: @ad_ios_pack)
+      withdraw_amount = 46
+      credit_on_hand = @member.withdraw_credit(withdraw_amount)
+      amount = cloud_receipt.credit_amount + all_receipt1.credit_amount + cloud_receipt.credit_amount - withdraw_amount
+      
+      expect(credit_on_hand).to eq(amount)
+      expect(@member.credit_records.where(amount: 0).count).to eq(2)
     end
     
     it 'should return nil if credit not enough' do

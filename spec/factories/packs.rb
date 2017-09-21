@@ -35,6 +35,15 @@ FactoryGirl.define do
     period_unit 'month'
   end
   
+  factory :ad_ios_cloud_pack, class: Pack do
+    name 'Cloud for Animation Desk Monthly'
+    external_id 'com.kdanmobile.animation-desk.cloud.month'
+    subscribable true
+    extendable false
+    period_num 1
+    period_unit 'month'
+  end
+  
   factory :ad_ios_storage_10g, class: Pack do
     name '10g Storage'
     external_id 'com.kdanmobile.animation-desk.storage.10g'

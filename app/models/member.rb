@@ -53,7 +53,10 @@ class Member < ApplicationRecord
   def withdraw_credit(amount)
     return if credit_on_hand - amount < 0
     credit_records.create(movement: :withdraw, amount: amount, occurred_at: Time.zone.now)
+    credit_records.occurred.will_expire.each do |credit_record|
+      break if amount.zero?
+      amount = credit_record.expire_record.comsume(amount)
+    end
     credit_on_hand
   end
-  
 end
