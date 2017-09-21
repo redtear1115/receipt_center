@@ -1,15 +1,17 @@
 class Member < ApplicationRecord
   has_many :receipts
+  has_many :credit_records
 
-  def status
+  def dashboard
     self.as_json(
-      methods: [:current_credits, :total_storage, :accessibility]
+      only: [:id],
+      methods: [:credit_on_hand, :max_storage, :accessibility]
     )
   end
   
   def accessibility
     result = {}
-    receipts = Receipt.where(id: Accessibility.member_receipt_ids(self.id))
+    receipts = Receipt.valid.where(id: Accessibility.member_receipt_ids(self.id))
     receipts.each do |receipt|
       acc = receipt.pack.items.accessibility
       # 保留最新的 valid_to
@@ -22,18 +24,34 @@ class Member < ApplicationRecord
     result
   end
   
-  def total_storage
-    capacity = 0
-    receipts = Receipt.where(id: Storage.member_receipt_ids(self.id))
+  def max_storage
+    result = 0
+    receipts = Receipt.valid.where(id: Storage.member_receipt_ids(self.id))
     receipts.each do |receipt|
       storage = receipt.pack.items.storage
       if receipt.pack.subscribable
-        capacity += storage.capacity if receipt.valid_on?(Time.zone.now)
+        result += storage.capacity if receipt.valid_on?(Time.zone.now)
       else
-        capacity += storage.capacity
+        result += storage.capacity
       end
     end
-    capacity
+    result
+  end
+  
+  def credit_on_hand
+    result = 0
+    self.credit_records.occurred.each do |credit_record|
+      if credit_record.increased?
+        result += credit_record.amount
+      elsif credit_record.decreased?
+        result -= credit_record.amount
+      end
+    end
+    result
+  end
+  
+  def withdraw_credit(amount)
+    credit_records.create(movement: :withdraw, amount: amount, occurred_at: Time.zone.now)
   end
   
 end

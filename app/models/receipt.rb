@@ -2,10 +2,11 @@ class Receipt < ApplicationRecord
   belongs_to :member
   belongs_to :pack
   
-  scope :valid, -> { where('valid_to > ?', Time.zone.now) }
+  scope :valid, -> { where('valid_to > ? OR valid_to IS NULL', Time.zone.now) }
   
   before_validation :update_channel
   before_validation :update_valid_from_to
+  after_create_commit :init_credit
   
   def pack_period
     pack.period_num.send("#{pack.period_unit}")
@@ -13,6 +14,17 @@ class Receipt < ApplicationRecord
   
   def valid_on?(datetime)
     self.valid_to >= datetime && self.valid_from <= datetime
+  end
+  
+  def init_credit
+    return if self.pack.items.credit.nil?
+    credit = self.pack.items.credit
+    if pack.subscribable?
+      CreditRecord.create(member_id: self.member_id, movement: :deposit, amount: credit.amount, occurred_at: self.valid_from)
+      CreditRecord.create(member_id: self.member_id, movement: :expired, amount: credit.amount, occurred_at: self.valid_to)
+    else
+      CreditRecord.create(member_id: self.member_id, movement: :deposit, amount: credit.amount, occurred_at: self.purchased_at)
+    end
   end
 
   private

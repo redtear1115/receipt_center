@@ -37,7 +37,14 @@ FactoryGirl.define do
   
   factory :ad_ios_storage_10g, class: Pack do
     name '10g Storage'
-    external_id 'com.kdanmobile.noteledge.storage.10g'
+    external_id 'com.kdanmobile.animation-desk.storage.10g'
+    subscribable false
+    extendable false
+  end
+  
+  factory :ad_ios_credit_20, class: Pack do
+    name '20 Credit'
+    external_id 'com.kdanmobile.animation-desk.credit.20'
     subscribable false
     extendable false
   end

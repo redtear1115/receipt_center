@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170920010437) do
+ActiveRecord::Schema.define(version: 20170921012048) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,15 @@ ActiveRecord::Schema.define(version: 20170920010437) do
     t.string "device"
     t.string "name"
     t.string "external_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "credit_records", force: :cascade do |t|
+    t.integer "member_id"
+    t.integer "movement"
+    t.integer "amount"
+    t.datetime "occurred_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
